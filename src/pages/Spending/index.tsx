@@ -151,7 +151,7 @@ const SpendingPage: React.FC = () => {
                     />
                 </div>
                 <Divider />
-                <form className="mb-10" onSubmit={formik.handleSubmit}>
+                <form className="mb-10 mt-3" onSubmit={formik.handleSubmit}>
                     <Expand open={showAdvanced} duration={300}>
                         <div className="grid lg:grid-cols-4 gap-3">
                             <div className="flex space-x-3 items-center lg:col-span-2">

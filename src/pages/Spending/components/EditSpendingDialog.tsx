@@ -135,7 +135,7 @@ const EditSpendingDialog: React.FC<{
                 <Calendar
                     inputId="spendingDate"
                     name="spendingDate"
-                    className="w-max"
+                    className="w-full md:w-max"
                     value={formik.values.spendingDate}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
