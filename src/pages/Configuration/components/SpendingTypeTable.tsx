@@ -36,9 +36,9 @@ const SpendingTypeTable: React.FC<{
         validationSchema: Yup.object({
             name: Yup.string().required('Tên loại chi tiêu là bắt buộc'),
         }),
-        onSubmit: async (values, { setSubmitting }) => {
+        onSubmit: async (values, { resetForm }) => {
             await onAdd(values);
-            setSubmitting(false);
+            resetForm();
             setShowInput(false);
         },
     });
@@ -51,6 +51,7 @@ const SpendingTypeTable: React.FC<{
                     icon="pi pi-times"
                     onClick={() => setShowInput(false)}
                     className="p-button-text"
+                    disabled={formik.isSubmitting}
                 />
                 <Button
                     label="Thêm"

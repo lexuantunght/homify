@@ -26,6 +26,7 @@ export type Spending = {
     name: string;
     spending_type: string;
     spending_method: string;
+    spending_date: Date;
     total: number;
     created_at: Date;
 };

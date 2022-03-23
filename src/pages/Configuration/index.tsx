@@ -1,6 +1,8 @@
 import React from 'react';
 import {
+    useAddSpendingMethod,
     useAddSpendingType,
+    useDeleteSpendingMethod,
     useDeleteSpendingType,
     useFetchSpendingMethods,
     useFetchSpendingTypes,
@@ -8,26 +10,37 @@ import {
 import LoadingMask from '../../common/components/LoadingMask';
 import SpendingTypeTable from './components/SpendingTypeTable';
 import SpendingMethodTable from './components/SpendingMethodTable';
+import { useQueryClient } from 'react-query';
 
 const ConfigurationPage: React.FC = () => {
-    const {
-        data: spendingTypes,
-        isLoading: isLoadingType,
-        refetch: refetchSpendingType,
-    } = useFetchSpendingTypes();
+    const queryClient = useQueryClient();
+    const { data: spendingTypes, isLoading: isLoadingType } =
+        useFetchSpendingTypes();
     const { data: spendingMethods, isLoading: isLoadingMethod } =
         useFetchSpendingMethods();
     const { mutateAsync: addSpendingType } = useAddSpendingType();
     const { mutateAsync: deleteSpendingType } = useDeleteSpendingType();
+    const { mutateAsync: addSpendingMethod } = useAddSpendingMethod();
+    const { mutateAsync: deleteSpendingMethod } = useDeleteSpendingMethod();
 
     const onAddSpendingType = async (values: { name: string }) => {
         await addSpendingType(values);
-        refetchSpendingType();
+        queryClient.invalidateQueries('spending_types');
     };
 
     const onDeleteSpendingType = async (id: string) => {
         await deleteSpendingType({ id });
-        refetchSpendingType();
+        queryClient.invalidateQueries('spending_types');
+    };
+
+    const onAddSpendingMethod = async (values: { name: string }) => {
+        await addSpendingMethod(values);
+        queryClient.invalidateQueries('spending_methods');
+    };
+
+    const onDeleteSpendingMethod = async (id: string) => {
+        await deleteSpendingMethod({ id });
+        queryClient.invalidateQueries('spending_methods');
     };
 
     if (isLoadingMethod || isLoadingType) {
@@ -48,6 +61,8 @@ const ConfigurationPage: React.FC = () => {
                     data={spendingMethods?.map((mode, id) =>
                         Object.assign(mode, { id: id + 1 })
                     )}
+                    onAdd={onAddSpendingMethod}
+                    onDelete={onDeleteSpendingMethod}
                 />
             </div>
         </div>

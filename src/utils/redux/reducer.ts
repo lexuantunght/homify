@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import DispatchType from '../../common/constants/DispatchType';
 import { UserData } from '../../common/models';
+import spendingReducer from '../../pages/Spending/reducer';
 
 type AppState = {
     isError: boolean | string;
@@ -25,6 +26,7 @@ const appReducer = (state = defaultAppStates, action: any) => {
 
 const reducer = combineReducers({
     app: appReducer,
+    spending: spendingReducer,
 });
 
 export default reducer;
