@@ -23,6 +23,7 @@ const SpendingMethodTable: React.FC<{
             header: 'Cảnh báo',
             acceptLabel: 'Đồng ý',
             rejectLabel: 'Huỷ bỏ',
+            className: 'w-4/5 md:w-1/2 lg:w-1/3',
             icon: 'pi pi-info-circle',
             acceptClassName: 'p-button-danger',
             accept: () => onDelete(item._id),

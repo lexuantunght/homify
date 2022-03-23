@@ -32,6 +32,7 @@ import { Spending } from '../../common/models';
 import { useQueryClient } from 'react-query';
 import AddSpendingDialog from './components/AddSpendingDialog';
 import EditSpendingDialog from './components/EditSpendingDialog';
+import _sumBy from 'lodash/sumBy';
 
 const SpendingPage: React.FC = () => {
     const dispatch = useDispatch();
@@ -84,6 +85,7 @@ const SpendingPage: React.FC = () => {
             rejectLabel: 'Huỷ bỏ',
             icon: 'pi pi-info-circle',
             acceptClassName: 'p-button-danger',
+            className: 'w-4/5 md:w-1/2 lg:w-1/3',
             accept: async () => {
                 await deleteSpending({ id: item._id });
                 queryClient.invalidateQueries('spendings');
@@ -113,6 +115,17 @@ const SpendingPage: React.FC = () => {
             dispatch({ type: DispatchType.SPENDING.QUERY, data: values }),
     });
 
+    const renderFooter = React.useCallback(() => {
+        return (
+            <span>
+                Tổng tiền trên trang:{' '}
+                {dataSpending
+                    ? _sumBy(dataSpending.spendings, 'total').toLocaleString()
+                    : 0}
+            </span>
+        );
+    }, [dataSpending]);
+
     React.useEffect(() => {
         if (editingSpending) {
             setShowEditDialog(true);
@@ -141,14 +154,15 @@ const SpendingPage: React.FC = () => {
                 <form className="mb-10" onSubmit={formik.handleSubmit}>
                     <Expand open={showAdvanced} duration={300}>
                         <div className="grid lg:grid-cols-4 gap-3">
-                            <div className="flex space-x-3 lg:items-center lg:col-span-2">
-                                <label htmlFor="spendingDate" className="w-28">
+                            <div className="flex space-x-3 items-center lg:col-span-2">
+                                <label htmlFor="fromDate" className="w-24">
                                     Khoảng ngày
                                 </label>
                                 <div className="flex lg:flex-row flex-col items-center lg:space-x-3 space-y-1 lg:space-y-0">
                                     <Calendar
                                         inputId="fromDate"
                                         name="fromDate"
+                                        className="w-44 md:w-auto"
                                         readOnlyInput
                                         showIcon
                                         value={formik.values.fromDate}
@@ -171,6 +185,7 @@ const SpendingPage: React.FC = () => {
                                     <Calendar
                                         inputId="toDate"
                                         name="toDate"
+                                        className="w-44 md:w-auto"
                                         readOnlyInput
                                         showIcon
                                         value={formik.values.toDate}
@@ -192,12 +207,13 @@ const SpendingPage: React.FC = () => {
                                 </div>
                             </div>
                             <div className="flex space-x-3 items-center lg:justify-center">
-                                <label htmlFor="spendingType" className="w-28">
+                                <label htmlFor="spendingType" className="w-24">
                                     Loại chi tiêu
                                 </label>
                                 <Dropdown
                                     name="spendingType"
                                     inputId="spendingType"
+                                    className="w-44 md:w-auto"
                                     options={spendingTypes}
                                     optionLabel="name"
                                     optionValue="name"
@@ -209,13 +225,14 @@ const SpendingPage: React.FC = () => {
                             <div className="flex space-x-3 items-center lg:justify-end">
                                 <label
                                     htmlFor="spendingMethod"
-                                    className="w-28"
+                                    className="w-24"
                                 >
                                     Phương thức
                                 </label>
                                 <Dropdown
                                     name="spendingMethod"
                                     inputId="spendingMethod"
+                                    className="w-44 md:w-auto"
                                     options={spendingMethods}
                                     optionLabel="name"
                                     optionValue="name"
@@ -228,12 +245,13 @@ const SpendingPage: React.FC = () => {
                     </Expand>
                     <div className="flex flex-col lg:flex-row lg:items-center justify-end lg:space-x-10 mt-3 space-y-3 lg:space-y-0">
                         <div className="flex space-x-3 items-center">
-                            <label htmlFor="name" className="w-28">
+                            <label htmlFor="name" className="w-24">
                                 Tên chi tiêu
                             </label>
                             <InputText
                                 id="name"
                                 name="name"
+                                className="w-44 md:w-auto"
                                 value={formik.values.name}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -266,12 +284,16 @@ const SpendingPage: React.FC = () => {
                 </form>
                 <DataTable
                     value={dataSpending?.spendings.map((spending, id) =>
-                        Object.assign(spending, { id: id + 1 + page * limit })
+                        Object.assign(spending, {
+                            id: id + 1 + page * limit,
+                        })
                     )}
                     showGridlines
                     emptyMessage="Không có dữ liệu"
                     rowHover
-                    responsiveLayout="scroll"
+                    stripedRows
+                    responsiveLayout="stack"
+                    footer={renderFooter}
                 >
                     <Column field="id" header="#"></Column>
                     <Column field="name" header="Tên"></Column>

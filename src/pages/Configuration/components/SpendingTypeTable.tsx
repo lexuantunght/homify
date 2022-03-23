@@ -24,6 +24,7 @@ const SpendingTypeTable: React.FC<{
             acceptLabel: 'Đồng ý',
             rejectLabel: 'Huỷ bỏ',
             icon: 'pi pi-info-circle',
+            className: 'w-4/5 md:w-1/2 lg:w-1/3',
             acceptClassName: 'p-button-danger',
             accept: () => onDelete(item._id),
         });
